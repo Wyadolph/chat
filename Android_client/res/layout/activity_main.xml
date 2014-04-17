@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/display"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="what client get"
+        android:maxLines="8"
+        android:scrollbars="vertical"
+        android:text="" />
+
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="1500dp"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/display"
+        android:layout_centerVertical="true"
+        android:hint="Please input"
+        android:text="" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/input"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="14dp"
+        android:text="Submit" />
+
+    <TextView
+        android:id="@+id/online"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/input"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/button"
+        android:layout_below="@+id/input"
+        android:hint="friends on line"
+        android:maxLines="8"
+        android:scrollbars="vertical" />
+
+</RelativeLayout>
