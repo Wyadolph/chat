@@ -51,6 +51,7 @@ public class MainActivity extends Activity
     private EditText nameet;
     private String screen_name;
     private Thread th;
+    public static final int prefix = 12;
     final Handler myhandler = new Handler()
     {
     	public void handleMessage(Message msg)
@@ -64,8 +65,8 @@ public class MainActivity extends Activity
     		}
     		if(msg.what == 0x456)
     		{
-    		   if(null != line.substring(12))//从NAMEACCEPTED之后开始
-    			  friends.append(line.substring(12));
+    		   if(null != line.substring(prefix))//从NAMEACCEPTED之后开始
+    			  friends.append(line.substring(prefix));
     			    ;
     		}
     	}
