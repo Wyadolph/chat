@@ -3,14 +3,18 @@
     package="com.example.android_server"
     android:versionCode="1"
     android:versionName="1.0" >
-    
-    <uses-permission android:name="android.permission.CHANG_WIFI_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"></uses-permission>
+
+    <uses-permission android:name="android.permission.CHANG_WIFI_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" >
+    </uses-permission>
+
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="18" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -19,7 +23,6 @@
         <activity
             android:name="com.example.android_client.MainActivity"
             android:label="@string/app_name" >
-           
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -47,7 +47,7 @@ public class ChatServer {
      * set is kept so we can easily broadcast messages.
      */
     private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
-
+    
     /**
      * The appplication main method, which just listens on a port and
      * spawns handler threads.
@@ -63,7 +63,6 @@ public class ChatServer {
             listener.close();
         }
     }
-
     /**
      * A handler thread class.  Handlers are spawned from the listening
      * loop and are responsible for a dealing with a single client
@@ -74,7 +73,26 @@ public class ChatServer {
         private Socket socket;
         private BufferedReader in;
         private PrintWriter out;
-
+        private StringBuffer sb;
+        /*traverse the online name and send them to client
+         * 
+         * 
+        */
+        public void traverse(String name,PrintWriter out)
+        {
+        	Iterator<String> it = names.iterator();
+        	sb = new StringBuffer("NAMEACCEPTED");
+    	    while(it.hasNext())
+    	    {
+    	    	String bfname = it.next();
+    	    	if(bfname!=name)
+    	    	{
+    	    		//out.print(bfname +" ");
+    	    		sb.append(bfname+" ");
+    	    		System.out.print(bfname+" ");
+    	    	}
+    	    }
+        }
         /**
          * Constructs a handler thread, squirreling away the socket.
          * All the interesting work is done in the run method.
@@ -103,13 +121,13 @@ public class ChatServer {
                 // must be done while locking the set of names.
                 while (true) 
                 {
-                    out.println("SUBMITNAME");
                     name = in.readLine();
                  /*   if (name.isEmpty()) {
                         return;
                     }*/
                     if(name == null)
                     	return ;
+                    //out.println("SUBMITNAME");
                     synchronized (names)
                     {
                         // This client is going down!  Remove its name and its  return; print
@@ -118,25 +136,15 @@ public class ChatServer {
                         {
                             names.add(name);
                             System.out.println(name);
-                            /*Iterator<String> it = names.iterator();
-                            while(it.hasNext())
-                            {
-                            	String bfname = it.next();
-                            	if(bfname!=name)
-                            	{
-                            		out.print(bfname +" ");
-                            		System.out.print(bfname+" ");
-                            	}
-                            }*/
+                            this.traverse(name,out);
                             break;
                         }
                    }
                  }
-                
                 //Now that a successful name has been chosen, add the
                 // socket's print writer to the set of all writers so
                 // this client can receive broadcast messages.
-                out.println("NAMEACCEPTED");
+                out.println(sb);//"NAMEACCEPTED + onlinefriends
                 writers.add(out);
                 // Accept messages from this client and broadcast them.
                 // Ignore other clients that cannot be broadcasted to.
