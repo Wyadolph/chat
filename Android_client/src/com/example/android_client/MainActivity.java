@@ -169,7 +169,14 @@ public class MainActivity extends Activity
     }
     protected void onDestroy()
     {
+    	try {
+			s.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	super.onDestroy();
+    	
     	Log.d("chat","destroyed");
     }
     protected void onResume()
