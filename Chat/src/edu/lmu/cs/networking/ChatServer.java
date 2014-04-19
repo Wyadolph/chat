@@ -113,7 +113,7 @@ public class ChatServer {
 
                 // Create character streams for the socket.
                 in = new BufferedReader(new InputStreamReader(
-                    socket.getInputStream()));
+                    socket.getInputStream(),"utf-8"));
                 out = new PrintWriter(socket.getOutputStream(), true);
                 // Request a name from this client.  Keep requesting until
                 // a name is submitted that is not already used.  Note that

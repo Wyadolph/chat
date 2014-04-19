@@ -70,11 +70,14 @@ public class MainActivity extends Activity
     		}
     	}
     };
-    protected void getField(DialogInterface dialog)
+    protected void getField(DialogInterface dialog,boolean motivation)
     {
 		try {
 			field = dialog.getClass().getSuperclass().getDeclaredField("mShowing");
-			field.setAccessible(true);
+			if(true == motivation)
+			  field.setAccessible(true);
+			else
+			  field.setAccessible(false);
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,7 +103,7 @@ public class MainActivity extends Activity
             	th = new Thread(thread);
     	        th.start();
     	        try {
-					Thread.sleep(1000);
+					Thread.sleep(2000);
 				} catch (InterruptedException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
@@ -108,22 +111,14 @@ public class MainActivity extends Activity
     	        if(!connected)
     	        {    
         	    	Toast.makeText(getApplicationContext(),"fail to connect",Toast.LENGTH_SHORT).show();
-    	            try {
-	        	    	    getField(dialog);
-							field.set(dialog, false);
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						} catch (IllegalArgumentException e1) {
-	        			    e1.printStackTrace();
-	        		    }
-    	        }
+    	            getField(dialog,false);
+				}
 	        	else
 	        	{
     	            flag = true;
+    	            getField(dialog,true);
         	        dialog.dismiss();
-        	        
-        	       
-    	        }
+        	    }
     	        if(flag)//IP输入框已经被关闭，可以打开用户名输入框
         	    {
         	    	Log.d("chat","in the name");
@@ -135,22 +130,17 @@ public class MainActivity extends Activity
                         public void onClick(DialogInterface dialog, int whichButton) 
                         {  
                         	screen_name = nameet.getText().toString();
-							getField(dialog);
-							try {
 							if(screen_name.isEmpty())
 							{
-								field.set(dialog, false);
+								getField(dialog, false);
 							    dialog.dismiss();
 							}
 							else
+							{
+								getField(dialog, true);
 						        pw.println(screen_name);	
-							} catch (IllegalAccessException e) {
-								e.printStackTrace();
-							} catch (IllegalArgumentException e) {
-								e.printStackTrace();
-							}
-												   
-                        }  
+							} 
+						}  
                     })
                 .show()
                 .setCanceledOnTouchOutside(false)
