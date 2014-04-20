@@ -45,9 +45,13 @@ public class MainActivity extends Activity
     private final static int prefix = 12;
     private Field field;
     private Button bt;
-    private boolean connected = false;
+    private volatile boolean connected = false;
     private InputStreamReader isr;
     private TextView send;
+    public static final String regex = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
+            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";//ip地址
     final Handler myhandler = new Handler()//将收到的话显示出来
     {
     	public void handleMessage(Message msg)
@@ -70,20 +74,26 @@ public class MainActivity extends Activity
     		}
     	}
     };
-    protected void getField(DialogInterface dialog,boolean motivation)
+    protected void getField(DialogInterface dialog,boolean motivation) 
     {
 		try {
 			field = dialog.getClass().getSuperclass().getDeclaredField("mShowing");
+			field.setAccessible(true);
 			if(true == motivation)
-			  field.setAccessible(true);
+				field.set(dialog, true);
 			else
-			  field.setAccessible(false);
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    
-    }
+			    field.set(dialog, false);
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
@@ -97,29 +107,32 @@ public class MainActivity extends Activity
         {  
             public void onClick(DialogInterface dialog, int whichButton) 
             {  
-            	boolean flag = false; //标记对话框是否被关闭
+                boolean flag = false; //标记对话框是否被关闭
             	ip = ipet.getText().toString();
-            	setContentView(R.layout.activity_main);
-            	th = new Thread(thread);
-    	        th.start();
-    	        try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
-    	        if(!connected)
-    	        {    
-        	    	Toast.makeText(getApplicationContext(),"fail to connect",Toast.LENGTH_SHORT).show();
-    	            getField(dialog,false);
-				}
-	        	else
-	        	{
-    	            flag = true;
-    	            getField(dialog,true);
-        	        dialog.dismiss();
-        	    }
-    	        if(flag)//IP输入框已经被关闭，可以打开用户名输入框
+            	if(ip.matches(regex))
+            	{
+            		setContentView(R.layout.activity_main);
+            	    th = new Thread(thread);
+    	            th.start();
+	    	        try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+	    	        if(!connected)
+	    	        {    
+	        	    	Toast.makeText(getApplicationContext(),"fail to connect",Toast.LENGTH_SHORT).show();
+	    	            getField(dialog,false);
+					}
+		        	else
+		        	{
+	    	            flag = true;
+	    	            getField(dialog,true);
+	        	        dialog.dismiss();
+	        	    }
+            	}
+                if(flag)//IP输入框已经被关闭，可以打开用户名输入框
         	    {
         	    	Log.d("chat","in the name");
         	    	new AlertDialog.Builder(MainActivity.this)
@@ -133,7 +146,6 @@ public class MainActivity extends Activity
 							if(screen_name.isEmpty())
 							{
 								getField(dialog, false);
-							    dialog.dismiss();
 							}
 							else
 							{
@@ -146,7 +158,8 @@ public class MainActivity extends Activity
                 .setCanceledOnTouchOutside(false)
                 ; 
         	    } 
-            }  
+			    getField(dialog,false);
+		    }  
         })
         .show()
         .setCanceledOnTouchOutside(false)
@@ -202,8 +215,6 @@ public class MainActivity extends Activity
     	{ 
     		try
 			{
-    			ip = ipet.getText().toString();
-    		    //ip = "192.168.1.114";
 				if((s = new Socket(ip, 9999)) ==null)
 				{
 					Log.d("chat","null");
